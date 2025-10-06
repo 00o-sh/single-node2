@@ -85,7 +85,7 @@ spec:
           - status.00o.sh
         parentRefs:
           - name: external
-            namespace: network
+            namespace: kube-system
             sectionName: https
     rbac:
       roles:
