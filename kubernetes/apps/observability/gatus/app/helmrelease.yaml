@@ -84,7 +84,7 @@ spec:
           - "{{ .Release.Name }}.00o.sh"
           - status.00o.sh
         parentRefs:
-          - name: envoy-external
+          - name: external
             namespace: network
             sectionName: https
     rbac:
