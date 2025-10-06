@@ -6,3 +6,5 @@ resources:
   - ./namespace.yaml
   - ./repos
   - ./sops
+  - ./replacements
+
