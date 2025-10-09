@@ -27,7 +27,7 @@ function wait_for_nodes() {
 function apply_namespaces() {
     log debug "Applying namespaces"
 
-    local -r apps_dir="${ROOT_DIR}/kubernetes/apps"
+    local -r apps_dir="${ROOT_DIR}/kubernetes/${CLUSTER_DIR}/apps"
 
     if [[ ! -d "${apps_dir}" ]]; then
         log error "Directory does not exist" "directory=${apps_dir}"
@@ -60,7 +60,7 @@ function apply_sops_secrets() {
     local -r secrets=(
         "${ROOT_DIR}/bootstrap/github-deploy-key.sops.yaml"
         "${ROOT_DIR}/bootstrap/sops-age.sops.yaml"
-        "${ROOT_DIR}/kubernetes/components/common/sops/cluster-secrets.sops.yaml"
+        "${ROOT_DIR}/kubernetes/${CLUSTER_DIR}/components/common/sops/cluster-secrets.sops.yaml"
     )
 
     for secret in "${secrets[@]}"; do
