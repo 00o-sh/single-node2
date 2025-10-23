@@ -9,3 +9,4 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./gatus/ks.yaml
+  - ./keda/ks.yaml
