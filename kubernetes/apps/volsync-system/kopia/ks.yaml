@@ -7,7 +7,6 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../components/common
   dependsOn:
     - name: volsync
   interval: 1h
