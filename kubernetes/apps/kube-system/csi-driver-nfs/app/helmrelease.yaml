@@ -12,7 +12,7 @@ spec:
   values:
     storageClass:
       create: true
-      name: nfs-fast
+      name: nfs-fast-ip
       parameters:
         server: 10.32.26.9
         share: /mnt/Speed/Kubernetes
