@@ -65,7 +65,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.00o.sh"
         parentRefs:
           - name: internal
             namespace: network
