@@ -23,6 +23,7 @@ spec:
               KOPIA_WEB_ENABLED: true
               KOPIA_WEB_PORT: &port 80
               TZ: America/New_York
+              XDG_CACHE_HOME: /config/cache
             envFrom:
               - secretRef:
                   name: kopia-secret
