@@ -10,7 +10,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: volsync
-      namespace: volsync-systems
+      namespace: volsync-system
   interval: 1h
   path: ./kubernetes/apps/media/radarr/app
   postBuild:
