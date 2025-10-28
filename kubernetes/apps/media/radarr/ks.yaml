@@ -8,6 +8,9 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
+  dependsOn:
+    - name: volsync
+      namespace: volsync-systemss
   interval: 1h
   path: ./kubernetes/apps/media/radarr/app
   postBuild:
