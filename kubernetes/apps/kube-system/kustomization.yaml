@@ -12,4 +12,3 @@ resources:
   - ./reloader/ks.yaml
   - ./csi-driver-nfs/ks.yaml
   - ./snapshot-controller/ks.yaml
-  - ./nfs-subdir-external-provisioner/ks.yaml
