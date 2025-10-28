@@ -28,5 +28,5 @@ spec:
     repository: ${APP}-volsync-secret
     sourceIdentity:
       sourceName: ${APP}
-    storageClassName: ${VOLSYNC_STORAGECLASS:=ceph-block}
+    storageClassName: ${VOLSYNC_STORAGECLASS:=nfs-fast}
     volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=nfs-fast}
