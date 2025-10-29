@@ -78,7 +78,7 @@ spec:
         existingClaim: "{{ .Release.Name }}"
       media:
         type: nfs
-        server: nas.3226texas.com
+        server: 10.32.26.9
         path: /mnt/Rust/Share/Plex
         globalMounts:
           - path: /media
