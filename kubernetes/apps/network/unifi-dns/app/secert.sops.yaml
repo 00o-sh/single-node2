@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.18.1-standalone-strict/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: unifi-dns-secret
+stringData:
+  UNIFI_API_KEY: ENC[AES256_GCM,data:gwEtV0xtgaafWGxw/NKLa06n3I6DnOs/GsEgLOUmg6g=,iv:ET4fTNiWxFJFjyX0gLRXKh7R6qZ3BJtUzz7t/npf25w=,tag:IpmUkzFQKVD9jOgTVeZlxw==,type:str]
+sops:
+  age:
+    - recipient: age1en4cf0wprkkt486yz5v68ee2duqsfj2w064x27dk0mnnxse8gs7q47fznp
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsZi95aVIzbXdWRTFUYTly
+        Q2dZS0FwMmI2REJ5S3N1N3pSK3BacjhibWtJCmplZTRpVkpqbTNMNDU2SnVkSWxM
+        WTdMUVVpRlMvbnd1TXJFeUFtWmo5RlkKLS0tIGNldEhldE1lOXRQdlY2bDFlLzRQ
+        UGcxNS9tSWUvRFhKSUh5Vjd6Y3FxazgKSwkwY9NDBGgv1DY59VbEBsakp5dPjhEq
+        R+GCAqq0aPiJUPaOaWBWSNDPSb3JwfGY0rXS4Lk1fFppJyZZdpsa3Q==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2025-10-29T21:03:08Z"
+  mac: ENC[AES256_GCM,data:IdZDR164P0GTkWd8U5SnjonEk25D4k9e7sfrCLp5ZwKaHU97b+Dw0yYgXGVgIBpgo6+6gkn41OJsq/QhvnQ9AWcKHGQZxLcoKgKxMrndG1TOcF6Kl7pr5p3eAOJ4Fbp8L8Ml5scIoN7iCm5omDKjW86QBy6tci4tRlY2HFT9O/A=,iv:JyWsjB0CLai2m3bOCq87rCBI7WPU+APOzg1Rnhwo1tM=,tag:BqWZ4HSnIkuHDbTwhGS4Jg==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  mac_only_encrypted: true
+  version: 3.11.0
