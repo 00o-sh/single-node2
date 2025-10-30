@@ -80,7 +80,7 @@ spec:
       media:
         type: nfs
         server: nas.3226texas.com
-        path: /mnt/Rust/Share/Plex
+        path: /mnt/Rust/Media
         globalMounts:
           - path: /media
       tmp:
