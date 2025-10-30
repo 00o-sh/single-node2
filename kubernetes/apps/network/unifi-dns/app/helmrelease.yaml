@@ -42,7 +42,7 @@ spec:
     sources:
       - gateway-httproute
       - service
-      - http
+      - ingress
     txtOwnerId: main
     txtPrefix: k8s.main.
     domainFilters:
