@@ -72,7 +72,7 @@ spec:
           - "{{ .Release.Name }}.00o.sh"
         parentRefs:
           - name: internal
-            namespace: network
+            namespace: kube-system
             sectionName: https
     persistence:
       config:
