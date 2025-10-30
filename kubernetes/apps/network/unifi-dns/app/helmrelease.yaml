@@ -25,6 +25,8 @@ spec:
               secretKeyRef:
                 name: &secret unifi-dns-secret
                 key: UNIFI_API_KEY
+          - name: LOG_LEVEL
+            value: debug
         livenessProbe:
           httpGet:
             path: /healthz
