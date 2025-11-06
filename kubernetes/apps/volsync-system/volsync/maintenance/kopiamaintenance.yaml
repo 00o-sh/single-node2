@@ -12,7 +12,3 @@ spec:
     schedule: "*/5 * * * *"
   repository:
     repository: volsync-maintenance-secret
-  repositoryVolume:
-    nfs:
-      server: nas.3226texas.com
-      path: /mnt/Speed/VolsyncKopia
