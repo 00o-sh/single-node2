@@ -57,7 +57,7 @@ spec:
           api:
             port: &port 3903
           web:
-            port: 3902
+            port: &webPort 3902
           s3:
             port: &s3Port 3900
     route:
@@ -83,6 +83,17 @@ spec:
           - backendRefs:
               - name: *app
                 port: *s3Port
+      web:
+        hostnames:
+          - garage-web.00o.sh
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *webPort
     persistence:
       config:
         enabled: true
