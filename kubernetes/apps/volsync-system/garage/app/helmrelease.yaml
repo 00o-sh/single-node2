@@ -94,12 +94,12 @@ spec:
       data:
         type: nfs
         server: nas.3226texas.com
-        path: /mnt/Speed/Kubernetes/apps/garag/data
+        path: /mnt/Speed/Kubernetes/apps/garage/data
         globalMounts:
           - path: /data
       meta:
         type: nfs
         server: nas.3226texas.com
-        path: /mnt/Speed/Kubernetes/apps/garag/meta
+        path: /mnt/Speed/Kubernetes/apps/garage/meta
         globalMounts:
           - path: /meta
