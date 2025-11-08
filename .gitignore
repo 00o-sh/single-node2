@@ -19,3 +19,5 @@ talosconfig
 .venv/
 .DS_Store
 Thumbs.db
+CLUSTER_ISSUES_REPORT.md
+CLUSTER_REVIEW.md
