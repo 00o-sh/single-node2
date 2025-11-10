@@ -32,7 +32,12 @@ spec:
       expression: >
         !has(object.spec.template.spec.volumes) ||
         !object.spec.template.spec.volumes.exists(item, item.name == "repository")
-  failurePolicy: Fail
+    - name: has-kopia-maint-container
+      expression: >
+        has(object.spec.template.spec.containers) &&
+        object.spec.template.spec.containers.exists(c, c.name == "kopia-maintenance")
+  # Don't block job creation if mutation fails; allow jobs to run and log the mutation failure.
+  failurePolicy: Ignore
   reinvocationPolicy: IfNeeded
   mutations:
     - patchType: JSONPatch
@@ -45,6 +50,7 @@ spec:
                 name: "repository",
                 nfs: Object.spec.template.spec.volumes.nfs{
                   server: "nas.3226texas.com",
+                  path: "/mnt/Speed/VolsyncKopia"
                 }
               }
             },

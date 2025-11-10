@@ -31,7 +31,12 @@ spec:
     - name: has-volsync-created-by-labels
       expression: >-
         object.metadata.?labels["app.kubernetes.io/created-by"].orValue("") == "volsync"
-  failurePolicy: Fail
+    - name: has-target-container-app
+      expression: >-
+        has(object.spec.template.spec.containers) &&
+        object.spec.template.spec.containers.exists(c, c.name == "app")
+  # Make admission failures non-fatal so jobs still run if mutation can't be applied.
+  failurePolicy: Ignore
   reinvocationPolicy: IfNeeded
   mutations:
     - patchType: JSONPatch
