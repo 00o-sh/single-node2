@@ -44,13 +44,19 @@ spec:
               value: Object.spec.template.spec.volumes{
                 name: "repository",
                 nfs: Object.spec.template.spec.volumes.nfs{
-                  server: "nas.3226texas.com",
                   path: "/mnt/Speed/VolsyncKopia"
                 }
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/volumeMounts/-",
+              value: Object.spec.template.spec.containers.volumeMounts{
+                name: "repository",
+                mountPath: "/repository"
+              }
+            },
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/containers/1/volumeMounts/-",
               value: Object.spec.template.spec.containers.volumeMounts{
                 name: "repository",
                 mountPath: "/repository"
