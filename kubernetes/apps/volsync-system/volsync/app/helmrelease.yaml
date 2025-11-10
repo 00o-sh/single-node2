@@ -27,3 +27,20 @@ spec:
       runAsNonRoot: true
       runAsUser: 1000
       runAsGroup: 1000
+    # Attempt to set default maintenance pod options. The upstream chart may or may not honor these keys;
+    # if it doesn't, we'll fall back to a MutatingAdmissionPolicy-based injection.
+    maintenance:
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      mover:
+        env:
+          - name: KOPIA_CONFIG_PATH
+            value: /repository/repository.config
+          - name: KOPIA_CACHE_DIRECTORY
+            value: /repository/kopia-cache
+          - name: KOPIA_LOG_DIR
+            value: /repository/kopia-logs
+      # serviceAccountName to run maintenance jobs
+      serviceAccountName: default

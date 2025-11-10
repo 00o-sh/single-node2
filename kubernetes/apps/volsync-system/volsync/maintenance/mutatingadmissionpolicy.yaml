@@ -28,10 +28,6 @@ spec:
     - name: has-kopia-maint-job-name-prefix
       expression: >
         object.metadata.name.startsWith("kopia-maint-")
-    - name: repository-volume-does-not-exist
-      expression: >
-        !has(object.spec.template.spec.volumes) ||
-        !object.spec.template.spec.volumes.exists(item, item.name == "repository")
     - name: has-kopia-maint-container
       expression: >
         has(object.spec.template.spec.containers) &&
@@ -59,6 +55,28 @@ spec:
               value: Object.spec.template.spec.containers.volumeMounts{
                 name: "repository",
                 mountPath: "/repository"
+              }
+            }
+            ,
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/containers/0/env/-",
+              value: Object.spec.template.spec.containers.env{
+                name: "KOPIA_CACHE_DIRECTORY",
+                value: "/repository/kopia-cache"
+              }
+            },
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/containers/0/env/-",
+              value: Object.spec.template.spec.containers.env{
+                name: "KOPIA_LOG_DIR",
+                value: "/repository/kopia-logs"
+              }
+            },
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/containers/0/env/-",
+              value: Object.spec.template.spec.containers.env{
+                name: "KOPIA_CONFIG_PATH",
+                value: "/repository/repository.config"
               }
             }
           ]
