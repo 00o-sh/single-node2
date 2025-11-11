@@ -14,6 +14,61 @@ spec:
       radarr:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          restore:
+            image:
+              repository: bitnami/kubectl
+              tag: latest
+            command:
+              - /bin/sh
+              - -c
+              - |
+                # Install kubectl if not available
+                if ! command -v kubectl &> /dev/null; then
+                  echo "kubectl not found, using image kubectl"
+                fi
+                
+                # Check if /data is empty
+                if [ ! -d "/data" ] || [ -z "$(ls -A /data 2>/dev/null | grep -v '^\.')" ]; then
+                  echo "Data directory is empty - triggering restore..."
+                  kubectl patch replicationdestination radarr-dst -n media \
+                    --type merge \
+                    -p "{\"spec\":{\"trigger\":{\"manual\":\"restore-auto-$(date +%s)\"}}}" || exit 1
+                  
+                  echo "Waiting for restore to complete..."
+                  timeout=600
+                  elapsed=0
+                  while [ $elapsed -lt $timeout ]; do
+                    status=$(kubectl get replicationdestination radarr-dst -n media \
+                      -o jsonpath='{.status.conditions[?(@.type=="Synchronizing")].status}' 2>/dev/null || echo "Unknown")
+                    result=$(kubectl get replicationdestination radarr-dst -n media \
+                      -o jsonpath='{.status.latestMoverStatus.result}' 2>/dev/null || echo "Unknown")
+                    
+                    if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
+                      echo "✅ Restore completed!"
+                      break
+                    elif [ "$result" = "Failed" ]; then
+                      echo "❌ Restore failed"
+                      exit 1
+                    fi
+                    
+                    sleep 5
+                    elapsed=$((elapsed + 5))
+                  done
+                  
+                  if [ $elapsed -ge $timeout ]; then
+                    echo "❌ Restore timeout"
+                    exit 1
+                  fi
+                else
+                  echo "Data directory has content - skipping restore"
+                fi
+            volumeMounts:
+              - name: config
+                mountPath: /data
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
         containers:
           app:
             image:
