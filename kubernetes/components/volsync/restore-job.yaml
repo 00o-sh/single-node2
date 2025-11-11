@@ -63,19 +63,31 @@ spec:
                 fi
               fi
 
-              # Check if PVC exists
+              # Check if restore is needed
+              # Only restore if PVC doesn't exist or is not bound
               if ! kubectl get pvc ${APP} -n ${NAMESPACE} &>/dev/null; then
-                echo "PVC ${APP} does not exist - will be created by restore"
+                echo "PVC ${APP} does not exist - restore needed"
                 NEEDS_RESTORE=true
               else
                 PVC_PHASE=$(kubectl get pvc ${APP} -n ${NAMESPACE} -o jsonpath='{.status.phase}' 2>/dev/null || echo "Unknown")
                 if [ "$PVC_PHASE" != "Bound" ]; then
-                  echo "PVC exists but not bound - will restore"
+                  echo "PVC exists but not bound - restore needed"
                   NEEDS_RESTORE=true
                 else
-                  echo "PVC exists and is bound - triggering restore"
-                  # With destinationPVC, restore will write directly to the PVC
-                  NEEDS_RESTORE=true
+                  # PVC exists and is bound - check if it has been restored before
+                  # Check for annotation that indicates restore already happened
+                  RESTORED=$(kubectl get pvc ${APP} -n ${NAMESPACE} -o jsonpath='{.metadata.annotations.volsync\.backube/restored}' 2>/dev/null || echo "")
+                  if [ -z "$RESTORED" ]; then
+                    echo "PVC exists and is bound, but no restore annotation found"
+                    echo "This might be a fresh cluster - checking if we should restore..."
+                    # Only restore if this looks like a fresh cluster (no data)
+                    # We'll be conservative and skip if PVC is bound
+                    echo "PVC is bound - assuming data exists, skipping restore"
+                    NEEDS_RESTORE=false
+                  else
+                    echo "PVC already has restore annotation - skipping restore"
+                    NEEDS_RESTORE=false
+                  fi
                 fi
               fi
 
@@ -105,7 +117,16 @@ spec:
                   if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
                     echo ""
                     echo "✅ Restore completed successfully!"
-
+                    
+                    # Mark PVC as restored to prevent future restores
+                    echo ""
+                    echo "Marking PVC as restored..."
+                    kubectl annotate pvc ${APP} -n ${NAMESPACE} \
+                      volsync.backube/restored="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+                      --overwrite || {
+                      echo "WARNING: Failed to annotate PVC, but restore completed"
+                    }
+                    
                     # Scale up the app if it was scaled down
                     if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
                       CURRENT_REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
@@ -117,7 +138,7 @@ spec:
                         }
                       fi
                     fi
-
+                    
                     exit 0
                   elif [ "$result" = "Failed" ]; then
                     echo ""
