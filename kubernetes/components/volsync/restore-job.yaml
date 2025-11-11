@@ -13,7 +13,7 @@ spec:
   completions: 1
   parallelism: 1
   backoffLimit: 0
-  ttlSecondsAfterFinished: 86400  # Clean up after 24 hours
+  ttlSecondsAfterFinished: 0  # Delete immediately after completion so Flux can recreate it
   template:
     metadata:
       labels:
@@ -49,7 +49,7 @@ spec:
               # Check if restore is needed and scale down app if running
               echo ""
               echo "Checking if restore is needed..."
-              
+
               # Check if app deployment exists and scale down if running
               if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
                 REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
@@ -62,7 +62,7 @@ spec:
                   sleep 5
                 fi
               fi
-              
+
               # Check if PVC exists
               if ! kubectl get pvc ${APP} -n ${NAMESPACE} &>/dev/null; then
                 echo "PVC ${APP} does not exist - will be created by restore"
@@ -105,7 +105,7 @@ spec:
                   if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
                     echo ""
                     echo "✅ Restore completed successfully!"
-                    
+
                     # Scale up the app if it was scaled down
                     if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
                       CURRENT_REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
@@ -117,7 +117,7 @@ spec:
                         }
                       fi
                     fi
-                    
+
                     exit 0
                   elif [ "$result" = "Failed" ]; then
                     echo ""
