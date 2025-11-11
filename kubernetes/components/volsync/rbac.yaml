@@ -17,6 +17,7 @@ rules:
       - apps
     resources:
       - deployments
+      - deployments/scale
     verbs:
       - get
       - patch
