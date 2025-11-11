@@ -46,22 +46,35 @@ spec:
                 sleep 2
               done
 
-              # Check if PVC exists and is empty
+              # Check if restore is needed and scale down app if running
               echo ""
               echo "Checking if restore is needed..."
+              
+              # Check if app deployment exists and scale down if running
+              if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
+                REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
+                if [ "$REPLICAS" != "0" ]; then
+                  echo "App is running - scaling down first..."
+                  kubectl scale deployment ${APP} -n ${NAMESPACE} --replicas=0 || {
+                    echo "WARNING: Failed to scale down, but continuing..."
+                  }
+                  echo "Waiting for pods to terminate..."
+                  sleep 5
+                fi
+              fi
+              
+              # Check if PVC exists
               if ! kubectl get pvc ${APP} -n ${NAMESPACE} &>/dev/null; then
                 echo "PVC ${APP} does not exist - will be created by restore"
                 NEEDS_RESTORE=true
               else
-                # Check if PVC is bound and has data
                 PVC_PHASE=$(kubectl get pvc ${APP} -n ${NAMESPACE} -o jsonpath='{.status.phase}' 2>/dev/null || echo "Unknown")
                 if [ "$PVC_PHASE" != "Bound" ]; then
                   echo "PVC exists but not bound - will restore"
                   NEEDS_RESTORE=true
                 else
-                  echo "PVC exists and is bound - checking if empty..."
-                  # We can't easily check if PVC is empty from here, so we'll trigger restore
-                  # and let VolSync handle it (it won't overwrite if data exists)
+                  echo "PVC exists and is bound - triggering restore"
+                  # With destinationPVC, restore will write directly to the PVC
                   NEEDS_RESTORE=true
                 fi
               fi
