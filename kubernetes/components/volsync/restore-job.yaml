@@ -1,0 +1,118 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${APP}-volsync-auto-restore
+  namespace: ${NAMESPACE}
+  annotations:
+    # This annotation ensures the job is recreated if it already exists
+    # allowing it to run again after cluster restore
+    "fluxcd.io/reconcile": "enabled"
+spec:
+  # Run only once, but allow recreation
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400  # Clean up after 24 hours
+  template:
+    metadata:
+      labels:
+        app: ${APP}
+        component: volsync-restore
+    spec:
+      serviceAccountName: volsync-restore-trigger
+      restartPolicy: Never
+      containers:
+        - name: restore
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "=== VolSync Auto-Restore Job ==="
+              echo "App: ${APP}"
+              echo "Namespace: ${NAMESPACE}"
+              echo ""
+              
+              # Wait for ReplicationDestination to exist
+              echo "Waiting for ReplicationDestination to be ready..."
+              for i in $(seq 1 30); do
+                if kubectl get replicationdestination ${APP}-dst -n ${NAMESPACE} &>/dev/null; then
+                  echo "✅ ReplicationDestination found"
+                  break
+                fi
+                echo "  Attempt $i/30..."
+                sleep 2
+              done
+              
+              # Check if PVC exists and is empty
+              echo ""
+              echo "Checking if restore is needed..."
+              if ! kubectl get pvc ${APP} -n ${NAMESPACE} &>/dev/null; then
+                echo "PVC ${APP} does not exist - will be created by restore"
+                NEEDS_RESTORE=true
+              else
+                # Check if PVC is bound and has data
+                PVC_PHASE=$(kubectl get pvc ${APP} -n ${NAMESPACE} -o jsonpath='{.status.phase}' 2>/dev/null || echo "Unknown")
+                if [ "$PVC_PHASE" != "Bound" ]; then
+                  echo "PVC exists but not bound - will restore"
+                  NEEDS_RESTORE=true
+                else
+                  echo "PVC exists and is bound - checking if empty..."
+                  # We can't easily check if PVC is empty from here, so we'll trigger restore
+                  # and let VolSync handle it (it won't overwrite if data exists)
+                  NEEDS_RESTORE=true
+                fi
+              fi
+              
+              if [ "$NEEDS_RESTORE" = "true" ]; then
+                echo ""
+                echo "=== Triggering restore ==="
+                RESTORE_ID="restore-auto-$(date +%s)"
+                kubectl patch replicationdestination ${APP}-dst -n ${NAMESPACE} \
+                  --type merge \
+                  -p "{\"spec\":{\"trigger\":{\"manual\":\"$RESTORE_ID\"}}}" || {
+                  echo "ERROR: Failed to trigger restore"
+                  exit 1
+                }
+                
+                echo "Restore triggered: $RESTORE_ID"
+                echo ""
+                echo "Waiting for restore to complete (timeout: 10 minutes)..."
+                
+                timeout=600
+                elapsed=0
+                while [ $elapsed -lt $timeout ]; do
+                  status=$(kubectl get replicationdestination ${APP}-dst -n ${NAMESPACE} \
+                    -o jsonpath='{.status.conditions[?(@.type=="Synchronizing")].status}' 2>/dev/null || echo "Unknown")
+                  result=$(kubectl get replicationdestination ${APP}-dst -n ${NAMESPACE} \
+                    -o jsonpath='{.status.latestMoverStatus.result}' 2>/dev/null || echo "Unknown")
+                  
+                  if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
+                    echo ""
+                    echo "✅ Restore completed successfully!"
+                    exit 0
+                  elif [ "$result" = "Failed" ]; then
+                    echo ""
+                    echo "❌ Restore failed"
+                    exit 1
+                  fi
+                  
+                  sleep 5
+                  elapsed=$((elapsed + 5))
+                  echo "  Still restoring... (${elapsed}s elapsed)"
+                done
+                
+                echo ""
+                echo "❌ Restore timeout after ${timeout}s"
+                exit 1
+              else
+                echo ""
+                echo "=== Restore not needed ==="
+                exit 0
+              fi
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+
