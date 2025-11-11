@@ -103,8 +103,8 @@ spec:
             JSONPatch{
               op: "add", path: "/spec/template/spec/volumes/-",
               value: {
-                "name": "repository",
-                "nfs": {
+                name: "repository",
+                nfs: {
                   "server": "nas.3226texas.com",
                   "path": "/mnt/Speed/VolsyncKopia"
                 }
@@ -113,29 +113,29 @@ spec:
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/volumeMounts/-",
               value: {
-                "name": "repository",
-                "mountPath": "/repository"
+                name: "repository",
+                mountPath: "/repository"
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
               value: {
-                "name": "KOPIA_CONFIG_PATH",
-                "value": "/repository/repository.config"
+                name: "KOPIA_CONFIG_PATH",
+                value: "/repository/repository.config"
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
               value: {
-                "name": "KOPIA_CACHE_DIRECTORY",
-                "value": "/repository/kopia-cache"
+                name: "KOPIA_CACHE_DIRECTORY",
+                value: "/repository/kopia-cache"
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
               value: {
-                "name": "KOPIA_LOG_DIR",
-                "value": "/repository/kopia-logs"
+                name: "KOPIA_LOG_DIR",
+                value: "/repository/kopia-logs"
               }
             }
           ]
