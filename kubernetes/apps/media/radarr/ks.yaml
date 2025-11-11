@@ -17,6 +17,7 @@ spec:
     substitute:
       APP: radarr
       VOLSYNC_CAPACITY: 5Gi
+      NAMESPACE: media
   prune: true
   sourceRef:
     kind: GitRepository
