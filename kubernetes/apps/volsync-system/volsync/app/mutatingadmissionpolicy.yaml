@@ -117,7 +117,7 @@ spec:
               op: "add", path: "/spec/template/spec/containers/0/env/-",
               value: Object.spec.template.spec.containers.env{
                 name: "KOPIA_MANUAL_CONFIG",
-                value: "{\"storage\":{\"type\":\"filesystem\",\"config\":{\"path\":\"/repository\"}},\"hostname\":\"volsync.media.svc.cluster.local\",\"username\":\"volsync\",\"description\":\"volsync\",\"enableActions\":false}"
+                value: "{\"storage\":{\"type\":\"filesystem\",\"config\":{\"path\":\"/repository\"}},\"hostname\":\"volsync." + object.metadata.namespace + ".svc.cluster.local\",\"username\":\"volsync\",\"description\":\"volsync\",\"enableActions\":false}"
               }
             },
             JSONPatch{
