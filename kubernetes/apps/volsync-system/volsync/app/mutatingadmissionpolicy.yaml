@@ -119,21 +119,21 @@ spec:
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: {
+              value: Object.spec.template.spec.containers.env{
                 name: "KOPIA_CONFIG_PATH",
                 value: "/repository/repository.config"
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: {
+              value: Object.spec.template.spec.containers.env{
                 name: "KOPIA_CACHE_DIRECTORY",
                 value: "/repository/kopia-cache"
               }
             },
             JSONPatch{
               op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: {
+              value: Object.spec.template.spec.containers.env{
                 name: "KOPIA_LOG_DIR",
                 value: "/repository/kopia-logs"
               }
