@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kopia-maintenance-custom
+  namespace: volsync-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kopia-maintenance-custom
+  namespace: volsync-system
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kopia-maintenance-custom
+  namespace: volsync-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kopia-maintenance-custom
+subjects:
+  - kind: ServiceAccount
+    name: kopia-maintenance-custom
+    namespace: volsync-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kopia-maintenance-custom
+  namespace: volsync-system
+spec:
+  schedule: "0 2 * * *"  # 2 AM daily
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: kopia-maintenance-custom
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 1000
+            fsGroup: 1000
+            runAsNonRoot: true
+          containers:
+            - name: kopia-maintenance
+              image: ghcr.io/perfectra1n/volsync:v0.16.13
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  export KOPIA_CONFIG_PATH=/repository/repository.config
+                  export KOPIA_CACHE_DIRECTORY=/repository/kopia-cache
+                  export KOPIA_LOG_DIR=/repository/kopia-logs
+                  export KOPIA_OVERRIDE_USERNAME=nobody
+                  export KOPIA_OVERRIDE_HOSTNAME=kopia-maintenance-custom
+
+                  echo "=== Kopia Maintenance Run ==="
+                  echo "Start time: $(date)"
+                  echo "Config: $KOPIA_CONFIG_PATH"
+                  echo ""
+
+                  # Connect to repository
+                  echo "Connecting to repository..."
+                  kopia repository connect filesystem --path /repository
+
+                  # Run maintenance
+                  echo "Running maintenance..."
+                  kopia maintenance run --full
+
+                  echo ""
+                  echo "Maintenance completed successfully"
+                  echo "End time: $(date)"
+              env:
+                - name: KOPIA_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: volsync-maintenance-secret
+                      key: KOPIA_PASSWORD
+              volumeMounts:
+                - name: repository
+                  mountPath: /repository
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+                readOnlyRootFilesystem: false  # Need write for Kopia cache/config
+          volumes:
+            - name: repository
+              nfs:
+                server: nas.3226texas.com
+                path: /mnt/Speed/VolsyncKopia

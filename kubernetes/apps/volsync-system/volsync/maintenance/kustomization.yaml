@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./kopiamaintenance.yaml
+  - ./kopia-maintenance-custom-cronjob.yaml
