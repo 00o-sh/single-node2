@@ -13,6 +13,14 @@ rules:
       - get
       - patch
       - update
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - patch
+      - update
 ---
 apiVersion: v1
 kind: ServiceAccount
