@@ -34,7 +34,7 @@ spec:
               echo "App: ${APP}"
               echo "Namespace: ${NAMESPACE}"
               echo ""
-              
+
               # Wait for ReplicationDestination to exist
               echo "Waiting for ReplicationDestination to be ready..."
               for i in $(seq 1 30); do
@@ -45,7 +45,7 @@ spec:
                 echo "  Attempt $i/30..."
                 sleep 2
               done
-              
+
               # Check if PVC exists and is empty
               echo ""
               echo "Checking if restore is needed..."
@@ -65,7 +65,7 @@ spec:
                   NEEDS_RESTORE=true
                 fi
               fi
-              
+
               if [ "$NEEDS_RESTORE" = "true" ]; then
                 echo ""
                 echo "=== Triggering restore ==="
@@ -76,11 +76,11 @@ spec:
                   echo "ERROR: Failed to trigger restore"
                   exit 1
                 }
-                
+
                 echo "Restore triggered: $RESTORE_ID"
                 echo ""
                 echo "Waiting for restore to complete (timeout: 10 minutes)..."
-                
+
                 timeout=600
                 elapsed=0
                 while [ $elapsed -lt $timeout ]; do
@@ -88,22 +88,35 @@ spec:
                     -o jsonpath='{.status.conditions[?(@.type=="Synchronizing")].status}' 2>/dev/null || echo "Unknown")
                   result=$(kubectl get replicationdestination ${APP}-dst -n ${NAMESPACE} \
                     -o jsonpath='{.status.latestMoverStatus.result}' 2>/dev/null || echo "Unknown")
-                  
+
                   if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
                     echo ""
                     echo "✅ Restore completed successfully!"
+                    
+                    # Scale up the app if it was scaled down
+                    if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
+                      CURRENT_REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
+                      if [ "$CURRENT_REPLICAS" = "0" ]; then
+                        echo ""
+                        echo "Scaling up ${APP} deployment..."
+                        kubectl scale deployment ${APP} -n ${NAMESPACE} --replicas=1 || {
+                          echo "WARNING: Failed to scale up, but restore completed"
+                        }
+                      fi
+                    fi
+                    
                     exit 0
                   elif [ "$result" = "Failed" ]; then
                     echo ""
                     echo "❌ Restore failed"
                     exit 1
                   fi
-                  
+
                   sleep 5
                   elapsed=$((elapsed + 5))
                   echo "  Still restoring... (${elapsed}s elapsed)"
                 done
-                
+
                 echo ""
                 echo "❌ Restore timeout after ${timeout}s"
                 exit 1
