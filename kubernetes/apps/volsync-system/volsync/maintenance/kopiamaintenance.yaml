@@ -8,8 +8,7 @@ metadata:
 spec:
   enabled: true
   trigger:
-    # schedule: 0 */8 * * *
-    schedule: "*/5 * * * *"
+    schedule: "0 2 * * *"  # Daily at 2 AM
   repository:
     repository: volsync-maintenance-secret
   # Ensure maintenance pods run as non-root and have fsGroup so NFS files are writable by UID 1000
