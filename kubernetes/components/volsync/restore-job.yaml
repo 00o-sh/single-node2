@@ -117,7 +117,7 @@ spec:
                   if [ "$status" = "False" ] && [ "$result" = "Successful" ]; then
                     echo ""
                     echo "✅ Restore completed successfully!"
-                    
+
                     # Mark PVC as restored to prevent future restores
                     echo ""
                     echo "Marking PVC as restored..."
@@ -126,7 +126,7 @@ spec:
                       --overwrite || {
                       echo "WARNING: Failed to annotate PVC, but restore completed"
                     }
-                    
+
                     # Scale up the app if it was scaled down
                     if kubectl get deployment ${APP} -n ${NAMESPACE} &>/dev/null; then
                       CURRENT_REPLICAS=$(kubectl get deployment ${APP} -n ${NAMESPACE} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "0")
@@ -138,7 +138,7 @@ spec:
                         }
                       fi
                     fi
-                    
+
                     exit 0
                   elif [ "$result" = "Failed" ]; then
                     echo ""
