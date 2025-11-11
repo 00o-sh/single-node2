@@ -99,15 +99,13 @@ spec:
     - patchType: JSONPatch
       jsonPatch:
         expression: >-
+          let nfsConfig = {"server": "nas.3226texas.com", "path": "/mnt/Speed/VolsyncKopia"};
           [
             JSONPatch{
               op: "add", path: "/spec/template/spec/volumes/-",
               value: {
                 name: "repository",
-                nfs: {
-                  "server": "nas.3226texas.com",
-                  "path": "/mnt/Speed/VolsyncKopia"
-                }
+                nfs: nfsConfig
               }
             },
             JSONPatch{
