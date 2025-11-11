@@ -107,31 +107,10 @@ spec:
               op: "add", path: "/spec/template/spec/volumes/-",
               value: Object.spec.template.spec.volumes{
                 name: "repository",
-                nfs: {
+                nfs: Object.spec.template.spec.volumes.nfs{
                   server: "nas.3226texas.com",
                   path: "/mnt/Speed/VolsyncKopia"
                 }
-              }
-            },
-            JSONPatch{
-              op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: Object.spec.template.spec.containers.env{
-                name: "KOPIA_CONFIG_PATH",
-                value: "/repository/repository.config"
-              }
-            },
-            JSONPatch{
-              op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: Object.spec.template.spec.containers.env{
-                name: "KOPIA_CACHE_DIRECTORY",
-                value: "/repository/kopia-cache"
-              }
-            },
-            JSONPatch{
-              op: "add", path: "/spec/template/spec/containers/0/env/-",
-              value: Object.spec.template.spec.containers.env{
-                name: "KOPIA_LOG_DIR",
-                value: "/repository/kopia-logs"
               }
             }
           ]
