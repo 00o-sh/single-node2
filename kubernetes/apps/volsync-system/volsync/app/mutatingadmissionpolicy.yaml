@@ -104,7 +104,7 @@ spec:
               op: "add", path: "/spec/template/spec/volumes/-",
               value: Object.spec.template.spec.volumes{
                 name: "repository",
-                nfs: Object.spec.template.spec.volumes.nfs{
+                nfs: {
                   server: "nas.3226texas.com",
                   path: "/mnt/Speed/VolsyncKopia"
                 }
