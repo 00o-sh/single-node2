@@ -73,7 +73,6 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            name: "Echo App"
             group: core-cluster
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         parentRefs:
