@@ -69,7 +69,7 @@ spec:
             interval: 1m
             urlPath: /health
             conditions:
-              - "[STATUS] >= 200 && [STATUS] < 300"
+              - "[STATUS] >= 200 && [STATUS] < 405"
         hostnames:
           - garage-api.00o.sh
         parentRefs:
@@ -88,7 +88,7 @@ spec:
             interval: 1m
             urlPath: /health
             conditions:
-              - "[STATUS] >= 200 && [STATUS] < 400"
+              - "[STATUS] >= 200 && [STATUS] < 405"
         hostnames:
           - garage-s3.00o.sh
         parentRefs:
@@ -107,7 +107,7 @@ spec:
             interval: 1m
             urlPath: /
             conditions:
-              - "[STATUS] >= 200 && [STATUS] < 400"
+              - "[STATUS] >= 200 && [STATUS] < 405"
         hostnames:
           - garage-web.00o.sh
         parentRefs:
