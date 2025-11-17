@@ -10,4 +10,4 @@ replacements:
 resources:
   - ./radarr/ks.yaml
   - ./qbittorrent/ks.yaml
-  - ./qui/ks.yaml
+#  - ./qui/ks.yaml
