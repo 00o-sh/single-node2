@@ -63,8 +63,18 @@ spec:
                   - "[STATUS] == 400"
           web:
             port: &webPort 3902
+            annotations:
+              gatus.home-operations.com/endpoint: |
+                interval: 2m
+                conditions:
+                  - "[STATUS] == 404"
           s3:
             port: &s3Port 3900
+            annotations:
+              gatus.home-operations.com/endpoint: |
+                interval: 2m
+                conditions:
+                  - "[STATUS] == 403"
     route:
       api:
         hostnames:
