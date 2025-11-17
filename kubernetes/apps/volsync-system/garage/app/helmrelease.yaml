@@ -4,11 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app garage
-  gatus.home-operations.com/endpoint: |
-    interval: 30s
-    conditions:
-      - "[STATUS] == 200"
-      - "[RESPONSE_TIME] < 500"
 spec:
   interval: 2h
   chartRef:
@@ -61,6 +56,11 @@ spec:
         ports:
           api:
             port: &port 3903
+            annotations:
+              gatus.home-operations.com/endpoint: |
+                interval: 2m
+                conditions:
+                  - "[STATUS] == 400"
           web:
             port: &webPort 3902
           s3:
