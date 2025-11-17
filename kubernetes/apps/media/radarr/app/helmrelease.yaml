@@ -68,6 +68,10 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: Radarr - Movie Management
+            group: media
         hostnames:
           - "{{ .Release.Name }}.00o.sh"
         parentRefs:
