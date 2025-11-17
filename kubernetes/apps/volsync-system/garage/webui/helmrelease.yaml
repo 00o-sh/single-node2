@@ -57,6 +57,10 @@ spec:
             port: &port 3909
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: Garage Portal
+            group: storage
         hostnames:
           - garage.00o.sh
         parentRefs:

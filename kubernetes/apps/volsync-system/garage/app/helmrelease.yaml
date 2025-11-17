@@ -64,7 +64,7 @@ spec:
       api:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            name: Garage API
+            name: Garage S3 API
             group: storage
             interval: 1m
             urlPath: /health
@@ -102,7 +102,7 @@ spec:
       web:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            name: Garage Web
+            name: Garage Bucket Web Access
             group: storage
             interval: 1m
             urlPath: /
