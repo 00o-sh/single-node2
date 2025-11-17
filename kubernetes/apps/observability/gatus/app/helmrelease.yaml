@@ -61,6 +61,12 @@ spec:
                 cpu: 100m
               limits:
                 memory: 256Mi
+          statefulset:
+            volumeClaimTemplates:
+              - name: config
+                storageClass: openebs-hostpath
+                accessMode: ReadWriteOnce
+                size: 5Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -119,8 +125,6 @@ spec:
     serviceAccount:
       gatus: {}
     persistence:
-      config:
-        existingClaim: "{{ .Release.Name }}"
       config-file:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
