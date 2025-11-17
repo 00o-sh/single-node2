@@ -86,6 +86,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
+            group: observability
         hostnames:
           - "{{ .Release.Name }}.00o.sh"
           - status.00o.sh
