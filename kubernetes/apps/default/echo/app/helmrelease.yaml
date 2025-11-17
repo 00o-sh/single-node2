@@ -71,8 +71,10 @@ spec:
           - port: http
     route:
       app:
-        gatus.home-operations.com/endpoint: |-
-          group: core-cluster
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: "Echo App"
+            group: core-cluster
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         parentRefs:
           - name: external

@@ -85,7 +85,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            name: Gatus Status Page
+            name: "Gatus Status Page"
             group: observability
             conditions: ["[STATUS] == 200"]
         hostnames:
