@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: csi-driver-nfs
 spec:
+  dependsOn:
+    - name: snapshot-controller
   interval: 1h
   path: ./kubernetes/apps/kube-system/csi-driver-nfs/app
   prune: true
