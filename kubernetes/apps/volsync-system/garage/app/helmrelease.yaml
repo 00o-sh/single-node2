@@ -56,27 +56,20 @@ spec:
         ports:
           api:
             port: &port 3903
-            annotations:
-              gatus.home-operations.com/endpoint: |
-                interval: 2m
-                conditions:
-                  - "[STATUS] == 400"
           web:
             port: &webPort 3902
-            annotations:
-              gatus.home-operations.com/endpoint: |
-                interval: 2m
-                conditions:
-                  - "[STATUS] == 404"
           s3:
             port: &s3Port 3900
-            annotations:
-              gatus.home-operations.com/endpoint: |
-                interval: 2m
-                conditions:
-                  - "[STATUS] == 403"
     route:
       api:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: Garage API
+            group: storage
+            interval: 1m
+            urlPath: /health
+            conditions:
+              - "[STATUS] >= 200 && [STATUS] < 300"
         hostnames:
           - garage-api.00o.sh
         parentRefs:
@@ -88,6 +81,14 @@ spec:
               - name: *app
                 port: *port
       s3:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: Garage S3
+            group: storage
+            interval: 1m
+            urlPath: /health
+            conditions:
+              - "[STATUS] >= 200 && [STATUS] < 400"
         hostnames:
           - garage-s3.00o.sh
         parentRefs:
@@ -99,6 +100,14 @@ spec:
               - name: *app
                 port: *s3Port
       web:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            name: Garage Web
+            group: storage
+            interval: 1m
+            urlPath: /
+            conditions:
+              - "[STATUS] >= 200 && [STATUS] < 400"
         hostnames:
           - garage-web.00o.sh
         parentRefs:
