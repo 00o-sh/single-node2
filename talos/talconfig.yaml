@@ -48,13 +48,13 @@ nodes:
           ip: 10.0.6.10
 
         # Tagged VLAN 56 for Multus/macvlan
-        # Note: Interface may be down but macvlan can still attach to it
+        # Add dummy link-local address to keep interface up for macvlan
         vlans:
-          - interface: bond0.56
-            vlanId: 56
-            mtu: 1500
+          - vlanId: 56
             dhcp: false
-            addresses: []
+            mtu: 1500
+            addresses:
+              - 169.254.1.1/32
 
 # Global patches applied after Talhelper rendering
 patches:
