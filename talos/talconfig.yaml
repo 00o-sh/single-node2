@@ -48,6 +48,7 @@ nodes:
           ip: 10.0.6.10
 
         # Tagged VLAN 56 for Multus/macvlan
+        # Note: Interface may be down but macvlan can still attach to it
         vlans:
           - interface: bond0.56
             vlanId: 56
