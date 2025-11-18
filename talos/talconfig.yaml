@@ -22,7 +22,7 @@ nodes:
     ipAddress: "10.0.6.211"
     installDisk: "/dev/sda"
     machineSpec:
-      secureboot: false
+      secureboot: true
     talosImageURL: factory.talos.dev/metal-installer/1f27123b6d8a11ff4f1b5f09f839f3662244f6bb11124faebe050c632291947b
     controlPlane: true
 
@@ -32,10 +32,10 @@ nodes:
         bond:
           mode: active-backup
           deviceSelectors:
+            - hardwareAddr: "58:47:ca:74:e4:05"
             - driver: icg
 
         mtu: 1500
-
         # Native VLAN 6 (untagged)
         dhcp: false
         addresses:
@@ -43,17 +43,15 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: 10.0.6.1
-
         vip:
           ip: 10.0.6.10
 
         # Tagged VLAN 56 for Multus/macvlan
-        # Add dummy link-local address to keep interface up for macvlan
         vlans:
           - vlanId: 56
             dhcp: false
             mtu: 1500
-
+            ignore: true
 # Global patches applied after Talhelper rendering
 patches:
   - "@./patches/global/machine-files.yaml"
