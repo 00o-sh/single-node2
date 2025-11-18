@@ -23,7 +23,7 @@ nodes:
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    talosImageURL: factory.talos.dev/metal-installer/1f27123b6d8a11ff4f1b5f09f839f3662244f6bb11124faebe050c632291947b
     controlPlane: true
 
     networkInterfaces:
@@ -32,7 +32,7 @@ nodes:
         bond:
           mode: active-backup
           deviceSelectors:
-            - hardwareAddr: "bc:24:11:02:2d:02"
+            - driver: icg
 
         mtu: 1500
 
@@ -53,8 +53,6 @@ nodes:
           - vlanId: 56
             dhcp: false
             mtu: 1500
-            addresses:
-              - 169.254.1.1/32
 
 # Global patches applied after Talhelper rendering
 patches:
