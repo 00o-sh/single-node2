@@ -29,15 +29,16 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "bc:24:11:02:2d:02"
-        dhcp: false
-        addresses:
-          - "10.0.6.211/24"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "10.0.6.1"
-        mtu: 1500
-        vip:
-          ip: "10.0.6.10"
+        vlans:
+          - vlanId: 6
+            addresses:
+              - "10.0.6.211/24"
+            mtu: 1500
+            routes:
+              - network: "0.0.0.0/0"
+                gateway: "10.0.6.1"
+            vip:
+              ip: "10.0.6.10"
 
 # Global patches
 patches:
