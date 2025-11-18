@@ -20,7 +20,7 @@ cniConfig:
 
 nodes:
   - hostname: "singlenodemaster"
-    ipAddress: "10.0.6.211" # Currrent IP address of the node it ill changes after talos installation based on line 35
+    ipAddress: "10.0.6.211"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
