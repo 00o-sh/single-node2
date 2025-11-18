@@ -57,7 +57,8 @@ spec:
             "name": "vpn",
             "namespace": "kube-system",
             "ips": ["192.168.56.10/24"],
-            "mac": "32:0b:d8:1f:b6:e4"
+            "mac": "32:0b:d8:1f:b6:e4",
+            "default-route": ["192.168.56.1"]
           }]
       securityContext:
         runAsNonRoot: true
