@@ -88,6 +88,8 @@ spec:
           .qbt.toml: |-
             [qbittorrent]
             addr = "http://localhost:80"
+            # Bind to VPN interface IP to force all traffic through VPN
+            interfaceAddress = "192.168.56.10"
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
