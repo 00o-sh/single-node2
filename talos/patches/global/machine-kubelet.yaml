@@ -7,3 +7,4 @@ machine:
     nodeIP:
       validSubnets:
         - 10.0.6.0/24
+        - 192.168.56.0/24

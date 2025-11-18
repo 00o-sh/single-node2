@@ -14,7 +14,6 @@ additionalMachineCertSans: *sans
 clusterPodNets: ["172.30.0.0/16"]
 clusterSvcNets: ["172.31.0.0/16"]
 
-# Disable built-in CNI to use Cilium
 cniConfig:
   name: none
 
@@ -26,23 +25,37 @@ nodes:
       secureboot: false
     talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
     controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "bc:24:11:02:2d:02"
-        vlans:
-          - vlanId: 6
-            addresses:
-              - "10.0.6.211/24"
-            mtu: 1500
-            routes:
-              - network: "0.0.0.0/0"
-                gateway: "10.0.6.1"
-            vip:
-              ip: "10.0.6.10"
-          - vlanId: 56
-            mtu: 1500
 
-# Global patches
+    networkInterfaces:
+      # Stable parent interface just like onedr0p
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "bc:24:11:02:2d:02"
+
+        mtu: 1500
+
+        # Native VLAN 6 (untagged)
+        dhcp: false
+        addresses:
+          - 10.0.6.211/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.6.1
+
+        vip:
+          ip: 10.0.6.10
+
+        # Tagged VLAN 56 for Multus/macvlan
+        vlans:
+          - interface: bond0.56
+            vlanId: 56
+            mtu: 1500
+            dhcp: false
+            addresses: []
+
+# Global patches applied after Talhelper rendering
 patches:
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
@@ -50,9 +63,7 @@ patches:
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
 
-# Controller patches
 controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
-
