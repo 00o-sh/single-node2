@@ -34,7 +34,7 @@ nodes:
           deviceSelectors:
             - hardwareAddr: "58:47:ca:74:e4:05"
             - driver: icg
-
+            - physical: true
         mtu: 1500
         # Native VLAN 6 (untagged)
         dhcp: false
