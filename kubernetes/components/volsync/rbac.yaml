@@ -22,6 +22,14 @@ rules:
       - get
       - patch
       - update
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - get
+      - patch
+      - update
 ---
 apiVersion: v1
 kind: ServiceAccount
