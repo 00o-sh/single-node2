@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: gatus
 spec:
-  components:
-    - ../../../../components/nfs-scaler
-    - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/observability/gatus/app
   postBuild:
