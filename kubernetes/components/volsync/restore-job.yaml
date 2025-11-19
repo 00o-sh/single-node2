@@ -75,11 +75,8 @@ spec:
                   RESTORED=$(kubectl get pvc ${APP} -n ${NAMESPACE} -o jsonpath='{.metadata.annotations.volsync\.backube/restored}' 2>/dev/null || echo "")
                   if [ -z "$RESTORED" ]; then
                     echo "PVC exists and is bound, but no restore annotation found"
-                    echo "This might be a fresh cluster - checking if we should restore..."
-                    # Only restore if this looks like a fresh cluster (no data)
-                    # We'll be conservative and skip if PVC is bound
-                    echo "PVC is bound - assuming data exists, skipping restore"
-                    NEEDS_RESTORE=false
+                    echo "This indicates a newly created PVC that needs data restored"
+                    NEEDS_RESTORE=true
                   else
                     echo "PVC already has restore annotation - skipping restore"
                     NEEDS_RESTORE=false
