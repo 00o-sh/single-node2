@@ -31,7 +31,7 @@ nodes:
         bond:
           mode: active-backup
           deviceSelectors:
-            - driver: icg
+            - hardwareAddr: 58:47:ca:74:e4:05
         mtu: 1500
         # Native VLAN 6 (untagged) set on the port as default and allowed all VLANs
         dhcp: false

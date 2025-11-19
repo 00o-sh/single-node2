@@ -41,3 +41,8 @@ ui:
 
 web:
   port: ${GATUS_WEB_PORT}
+
+storage:
+  type: sqlite
+  path: /config/sqlite.db
+  caching: true
