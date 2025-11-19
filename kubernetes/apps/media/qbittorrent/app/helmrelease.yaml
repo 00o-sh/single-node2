@@ -56,7 +56,7 @@ spec:
           [{
             "name": "vpn",
             "namespace": "kube-system",
-            "ips": ["10.0.6.253/24"],
+            "ips": ["192.168.56.10/24"],
             "mac": "32:0b:d8:1f:b6:e4"
           }]
       securityContext:
@@ -91,8 +91,6 @@ spec:
           .qbt.toml: |-
             [qbittorrent]
             addr = "http://localhost:80"
-            # Bind to VPN interface IP to force all traffic through VPN
-            # interfaceAddress = "192.168.56.10"
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
