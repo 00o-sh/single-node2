@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: ${APP}-volsync-auto-restore-
+  name: ${APP}-volsync-auto-restore
   namespace: ${NAMESPACE}
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
