@@ -4,16 +4,12 @@ kind: Job
 metadata:
   name: ${APP}-volsync-auto-restore
   namespace: ${NAMESPACE}
-  annotations:
-    # This annotation ensures the job is recreated if it already exists
-    # allowing it to run again after cluster restore
-    "fluxcd.io/reconcile": "enabled"
 spec:
   # Run only once, but allow recreation
   completions: 1
   parallelism: 1
   backoffLimit: 0
-  ttlSecondsAfterFinished: 0  # Delete immediately after completion so Flux can recreate it
+  ttlSecondsAfterFinished: 604800  # Keep job for 7 days to prevent Flux from recreating it on every reconcile
   template:
     metadata:
       labels:
