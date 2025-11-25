@@ -46,6 +46,7 @@ nodes:
           - vlanId: 56
             dhcp: false
             mtu: 1500
+            addresses: []
 # Global patches applied after Talhelper rendering
 patches:
   - "@./patches/global/machine-files.yaml"
