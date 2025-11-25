@@ -30,8 +30,7 @@ nodes:
       - interface: bond0
         bond:
           mode: active-backup
-          deviceSelectors:
-            - hardwareAddr: 58:47:ca:74:e4:05
+          deviceSelectors: [{ hardwareAddr: "58:47:ca:74:e4:*", driver: igc }]
         mtu: 1500
         # Native VLAN 6 (untagged) set on the port as default and allowed all VLANs
         dhcp: false
